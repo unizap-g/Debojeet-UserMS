@@ -1,0 +1,27 @@
+{
+  "name": "auth-user-ms",
+  "version": "1.0.0",
+  "description": "Auth and User Microservice",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.5",
+    "axios": "^1.12.0",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.0",
+    "morgan": "^1.10.1",
+    "nodemon": "^3.1.10",
+    "otp-generator": "^4.0.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  }
+}

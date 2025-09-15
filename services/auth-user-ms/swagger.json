@@ -1,0 +1,238 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "User & Auth Service API",
+    "version": "1.0.0",
+    "description": "Swagger documentation for User Service (Auth, OTP, User Management, Dashboard)."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "UserId": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-user-id"
+      },
+      "UserRole": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-user-role"
+      }
+    }
+  },
+  "security": [
+    { "UserId": [] },
+    { "UserRole": [] }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "tags": ["System"],
+        "responses": {
+          "200": {
+            "description": "Service health status"
+          }
+        }
+      }
+    },
+    "/api/v1/auth": {
+      "post": {
+        "summary": "Authenticate User (Login/Register)",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "event": { "type": "string", "example": "login" },
+                  "mode": { "type": "string", "example": "email-otp" },
+                  "email": { "type": "string", "example": "user@example.com" },
+                  "password": { "type": "string" },
+                  "mobile": { "type": "string" },
+                  "country_code": { "type": "string" },
+                  "passcode": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Authenticated successfully" },
+          "400": { "description": "Bad Request" }
+        }
+      }
+    },
+    "/api/v1/auth/send-otp": {
+      "post": {
+        "summary": "Send OTP",
+        "tags": ["OTP"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "mode": { "type": "string", "example": "mobile" },
+                  "mobile": { "type": "string", "example": "9876543210" },
+                  "country-code": { "type": "string", "example": "+91" },
+                  "email": { "type": "string", "example": "user@example.com" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OTP sent successfully" }
+        }
+      }
+    },
+    "/api/v1/auth/verify-otp": {
+      "post": {
+        "summary": "Verify OTP",
+        "tags": ["OTP"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "mode": { "type": "string", "example": "mobile" },
+                  "mobile": { "type": "string" },
+                  "country-code": { "type": "string" },
+                  "email": { "type": "string" },
+                  "otp": { "type": "string" },
+                  "passcode": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OTP verified successfully" },
+          "401": { "description": "Invalid/expired OTP" }
+        }
+      }
+    },
+    "/api/v1/auth/password": {
+      "put": {
+        "summary": "Manage Password",
+        "tags": ["Password"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "event": { "type": "string", "example": "update" },
+                  "mode": { "type": "string", "example": "email" },
+                  "email": { "type": "string" },
+                  "mobile": { "type": "string" },
+                  "country-code": { "type": "string" },
+                  "otp": { "type": "string" },
+                  "new-password": { "type": "string" },
+                  "current-password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Password updated/reset successfully" }
+        }
+      }
+    },
+    "/api/v1/auth/user": {
+      "get": {
+        "summary": "Get User Details",
+        "tags": ["User"],
+        "responses": {
+          "200": { "description": "Returns user details" }
+        }
+      },
+      "put": {
+        "summary": "Update User Details",
+        "tags": ["User"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": { "type": "string" },
+                  "lastName": { "type": "string" },
+                  "dob": { "type": "string", "format": "date" },
+                  "profile-photo": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "User updated successfully" }
+        }
+      },
+      "delete": {
+        "summary": "Delete User (Admin only)",
+        "tags": ["User"],
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "User deleted successfully" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/dashboard": {
+      "get": {
+        "summary": "Get Dashboard Data",
+        "tags": ["Dashboard"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "date_range": {
+                    "type": "object",
+                    "properties": {
+                      "type": { "type": "string", "example": "today" },
+                      "from": { "type": "string", "format": "date" },
+                      "to": { "type": "string", "format": "date" }
+                    }
+                  },
+                  "include_os": { "type": "boolean" },
+                  "include_daily_scans": { "type": "boolean" },
+                  "include_browser": { "type": "boolean" },
+                  "include_time_of_day": { "type": "boolean" },
+                  "include_qr_name": { "type": "boolean" },
+                  "group_location": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Dashboard data with filters" }
+        }
+      }
+    }
+  }
+}
